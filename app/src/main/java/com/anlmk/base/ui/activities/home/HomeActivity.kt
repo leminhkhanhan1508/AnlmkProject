@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.anlmk.base.R
 import com.anlmk.base.data.`object`.CommonEntity
 import com.anlmk.base.databinding.ActivityHomeBinding
-import com.anlmk.base.databinding.ActivityLoginBinding
 import com.anlmk.base.ui.adapters.CommonAdapter
 import com.anlmk.base.ui.base.BaseActivity
 import org.koin.android.viewmodel.ext.android.viewModel

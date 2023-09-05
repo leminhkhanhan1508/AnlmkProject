@@ -4,7 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.anlmk.base.data.`object`.CommonEntity
+import com.anlmk.base.data.`object`.InstalledApplicationInfo
 import com.anlmk.base.databinding.AdapterHeaderTypeBinding
+import com.anlmk.base.databinding.AdapterInformationAppBinding
 import com.anlmk.base.databinding.AdapterMainMenuServiceBinding
 import com.anlmk.base.extensions.setSafeOnClickListener
 
@@ -12,6 +14,8 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         const val MENU_SERVICE = 101
         const val HEADER = 100
+        const val INFO_APP = 102
+
     }
 
     var onClick: (Any) -> Unit = {}
@@ -35,6 +39,13 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     )
                 )
             }
+            INFO_APP -> {
+                InfoAppViewHolder(
+                    AdapterInformationAppBinding.inflate(
+                        LayoutInflater.from(parent.context), parent, false
+                    )
+                )
+            }
             else -> {
                 ServiceViewHolder(
                     AdapterMainMenuServiceBinding.inflate(
@@ -54,6 +65,9 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is ServiceViewHolder -> {
                 holder.onBind(data.data as CommonEntity)
             }
+            is InfoAppViewHolder -> {
+                holder.onBind(data.data as InstalledApplicationInfo)
+            }
         }
 
     }
@@ -66,6 +80,9 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val data = mDataSet[position].data
         if (data is CommonEntity) {
             return data.getTypeLayout()
+        }
+        if (data is InstalledApplicationInfo){
+            return INFO_APP
         }
         return super.getItemViewType(position)
     }
@@ -90,6 +107,15 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class HeaderViewHolder(private val binding: AdapterHeaderTypeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: CommonEntity) {
             binding.title.text = data.getTitle()
+        }
+    }
+
+    inner class InfoAppViewHolder(private val binding: AdapterInformationAppBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun onBind(data: InstalledApplicationInfo) {
+            binding.imgAppLogo.setImageDrawable(data.iconApp)
+            binding.txtAppName.text=data.appName
+            binding.txtPackageName.text=data.packageName
+            binding.txtStatus.text= data.statusApp
         }
     }
 

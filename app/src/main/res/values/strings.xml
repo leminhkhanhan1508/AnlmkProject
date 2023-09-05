@@ -14,4 +14,6 @@
     <string name="home_page">Home</string>
     <string name="setting_page">Cài đặt</string>
     <string name="other_page">Khác</string>
+    <string name="status_safe_app">An toàn</string>
+    <string name="status_unsafe_app">Ứng dụng nguy hiểm</string>
 </resources>
