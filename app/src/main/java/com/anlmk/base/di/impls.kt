@@ -4,8 +4,8 @@ import com.anlmk.base.data.impl.*
 import org.koin.dsl.module
 
 val impls = module {
-    single<LoginRepo> {
-        LoginRepoImpl(
+    single<ScanInstalledAppRepo> {
+        ScanInstalledAppImpl(
             get()
         )
     }

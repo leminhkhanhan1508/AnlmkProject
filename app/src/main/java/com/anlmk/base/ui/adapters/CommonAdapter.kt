@@ -2,7 +2,9 @@ package com.anlmk.base.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.anlmk.base.R
 import com.anlmk.base.data.`object`.CommonEntity
 import com.anlmk.base.data.`object`.InstalledApplicationInfo
 import com.anlmk.base.databinding.AdapterHeaderTypeBinding
@@ -100,7 +102,8 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         fun onBind(data: CommonEntity) {
             binding.imgFunctionLogo.setImageResource(data.getIcon())
-            binding.txtFuctionName.text = data.getTitle()
+            binding.txtFunctionName.text = data.getTitle()
+            binding.txtFunctionDescription.text = data.getDescript()
         }
     }
 
@@ -113,9 +116,25 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class InfoAppViewHolder(private val binding: AdapterInformationAppBinding) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: InstalledApplicationInfo) {
             binding.imgAppLogo.setImageDrawable(data.iconApp)
-            binding.txtAppName.text=data.appName
+            binding.txtAppName.text = data.appName
             binding.txtPackageName.text=data.packageName
             binding.txtStatus.text= data.statusApp
+            binding.txtStatus.setTextColor(
+                ContextCompat.getColor(
+                    binding.root.context,
+                    getColorStatusText(data.isSafeApp)
+                )
+            )
+            binding.txtPercentageOfMalware.text = data.percentageOfMalware.toString()
+        }
+
+        init {
+            binding.root.setSafeOnClickListener {
+                val data = mDataSet[absoluteAdapterPosition].data as? InstalledApplicationInfo
+                if (data != null) {
+                    onClick(data)
+                }
+            }
         }
     }
 
@@ -127,4 +146,10 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun getColorStatusText(isSafe: Boolean): Int {
+        return if (isSafe)
+            R.color.color_4caf50
+        else
+            R.color.color_ed3432
+    }
 }

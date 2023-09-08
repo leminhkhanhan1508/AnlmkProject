@@ -9,6 +9,7 @@ class CommonEntity {
     private var typeLayout: Int = 0
     private var counter: Int = 0
     private var dataToolTip: String? = null
+    var codeFunction: String? = null
 
     fun isHighLight(): Boolean {
         return isHightLight

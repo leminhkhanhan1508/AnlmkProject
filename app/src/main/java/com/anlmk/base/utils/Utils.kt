@@ -2,6 +2,7 @@ package com.anlmk.base.utils
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
@@ -49,49 +50,47 @@ object Utils {
         return listResult.toList()
     }
 
-    fun getInstalledApplication(context: Context): List<InstalledApplicationInfo> {
-        val pm = context.packageManager
-        val mainIntent = Intent(Intent.ACTION_MAIN, null)
-        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
 
-        val resolvedInfos = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            pm.queryIntentActivities(
-                mainIntent,
-                PackageManager.ResolveInfoFlags.of(0L)
-            )
-        } else {
-            pm.queryIntentActivities(mainIntent, 0)
+
+    fun getPermissionNames(packageName: String, pm: PackageManager): ArrayList<String> {
+        val permissionNames: ArrayList<String> = ArrayList()
+
+        if (packageName.isEmpty()) {
+            return permissionNames
         }
 
-        var listInstalledApplicationInfo: ArrayList<InstalledApplicationInfo> = arrayListOf()
-        for (item in resolvedInfos){
-            val appName = item.activityInfo.applicationInfo.loadLabel(pm).toString()
-            val packageName = item.activityInfo.packageName
-            val iconDrawable = item.activityInfo.loadIcon(pm)
-            val requestedPermissions = pm.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS).requestedPermissions
-            val permissionNames: ArrayList<String> = ArrayList()
-            if (requestedPermissions==null){
-                Log.wtf("KHANHANDEBUG",appName+packageName)
-                break
+        try {
+            val packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+            val requestedPermissions = packageInfo.requestedPermissions
+            if (requestedPermissions != null){
+                permissionNames.addAll(requestedPermissions)
+            }else{
+                Log.wtf("KHANHANDEBUG-getPermissionNames",packageName)
             }
-            for (permission in requestedPermissions) {
-                try {
-                    val permissionInfo = pm.getPermissionInfo(permission!!, 0)
-                    permissionNames.add(permissionInfo.name)
-                } catch (e: PackageManager.NameNotFoundException) {
-                    e.printStackTrace()
-                }
-            }
-            listInstalledApplicationInfo.add(InstalledApplicationInfo().apply {
-                this.packageName = packageName
-                this.appName = appName
-                this.iconApp = iconDrawable
-                this.listPermission = permissionNames
-            })
+//            if (requestedPermissions != null) {
+//                for (permission in requestedPermissions) {
+//                    try {
+//                        val permissionInfo = pm.getPermissionInfo(permission, 0)
+//                        permissionNames.add(permissionInfo.name)
+//                    } catch (e: PackageManager.NameNotFoundException) {
+//                        Log.wtf("KHANHANDEBUG",packageName+"-"+e.message)
+//                        e.printStackTrace()
+//                    }
+//                }
+//            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
         }
-        return listInstalledApplicationInfo
 
+        return permissionNames
     }
 
+    fun getInstallerInfo(packageName: String, packageManager: PackageManager): String? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            packageManager.getInstallSourceInfo(packageName).installingPackageName
+        } else {
+            packageManager.getInstallerPackageName(packageName)
+        }
+    }
 
 }

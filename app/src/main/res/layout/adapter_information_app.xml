@@ -17,20 +17,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp10"
+        android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
         <com.anlmk.base.ui.views.TextView
             android:id="@+id/txtAppName"
+            android:textColor="@color/color_005d98"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.anlmk.base.ui.views.TextView
             android:id="@+id/txtPackageName"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.anlmk.base.ui.views.TextView
             android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <com.anlmk.base.ui.views.TextView
+            android:id="@+id/txtPercentageOfMalware"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

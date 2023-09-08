@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import com.anlmk.base.databinding.ActivitySplashBinding
+import com.anlmk.base.ui.activities.home.HomeActivity
 import com.anlmk.base.ui.activities.login.ScanInstalledAppActivity
 import com.anlmk.base.ui.base.BaseActivity
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -19,7 +20,8 @@ class SplashActivity:BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Handler().postDelayed(Runnable {
-            startActivity(Intent(this, ScanInstalledAppActivity::class.java))
+            startActivity(Intent(this,
+                HomeActivity::class.java))
             finish()
         }, 400)
 

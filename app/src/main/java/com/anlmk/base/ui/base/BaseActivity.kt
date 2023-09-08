@@ -7,12 +7,14 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.anlmk.base.R
 import com.anlmk.base.di.Common
+import com.anlmk.base.extensions.setSafeOnClickListener
 import com.anlmk.base.ui.dialogs.LoadingDialog
 import com.anlmk.base.ui.dialogs.ConfirmDialog
 import org.koin.android.ext.android.inject
@@ -31,7 +33,19 @@ abstract class BaseActivity : AppCompatActivity() {
         setFullScreen(R.color.color_00a1e4)
         Common.currentActivity = this
         setContentView(binding.root)
+        initView()
+        onListener()
         onObserveData()
+    }
+
+    open fun initView() {
+
+    }
+
+    open fun onListener() {
+        binding.root.findViewById<ImageView>(R.id.icBack)?.setSafeOnClickListener {
+            onBackPressed()
+        }
     }
 
 
@@ -58,12 +72,11 @@ abstract class BaseActivity : AppCompatActivity() {
             loading.cancel()
         }
     }
-
-    private fun hideLoading() {
+    fun hideLoading() {
         loading.dismiss()
     }
 
-    private fun showLoading() {
+    fun showLoading() {
         loading.show()
     }
     open fun handleShowLoading(isLoading: Boolean) {

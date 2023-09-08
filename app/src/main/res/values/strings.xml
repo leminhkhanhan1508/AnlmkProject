@@ -15,5 +15,15 @@
     <string name="setting_page">Cài đặt</string>
     <string name="other_page">Khác</string>
     <string name="status_safe_app">An toàn</string>
-    <string name="status_unsafe_app">Ứng dụng nguy hiểm</string>
+    <string name="status_unsafe_app">Nguy hiểm</string>
+    <string name="scan_system">Kiểm tra hệ thống</string>
+    <string name="all_application">Tất cả ứng dụng</string>
+    <string name="unsafe_application">Ứng dụng nguy hiểm</string>
+    <string name="safe_application">Ứng dụng an toàn</string>
+    <string name="unknown_application">Ứng dụng không xác định</string>
+    <string name="percentage_s">%s %%</string>
+    <string name="description_all_application">Kiểm tra toàn bộ ứng dụng trong điện thoại của bạn</string>
+    <string name="description_unsafe_application">"Hiển thị những ứng dụng yêu cầu quyền có khả năng gây đánh mất thông tin cá nhân của bạn "</string>
+    <string name="description_safe_application">Ứng dụng không chứa các quyền có khả năng đánh cắp thông tin cá nhân</string>
+    <string name="description_unknown_application">Các ứng dụng không được cài đặt từ CHPlay và có khả năng đánh cắp thông tin cá nhân của bạn</string>
 </resources>
