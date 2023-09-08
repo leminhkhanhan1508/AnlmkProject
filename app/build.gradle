@@ -6,7 +6,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.anlmk.base"
+        applicationId "com.anlmk.superviser"
         minSdk 23
         targetSdk 33
         versionCode vsCode

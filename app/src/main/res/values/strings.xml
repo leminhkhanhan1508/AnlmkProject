@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BaseProject</string>
+    <string name="app_name">Quản lý ứng dụng</string>
     <string name="error_at_server">Yêu cầu của Quý khách đến hệ thống tạm thời gián đoạn. Vui lòng thử lại sau.</string>
     <string name="error_no_network">Quý khách vui lòng kiểm tra kết nối Internet/3G/Wifi</string>
     <string name="error_network_disconnect">Kết nối đến hệ thống ngân hàng bị gián đoạn. Nếu Quý khách đang trong quá trình thực hiện giao dịch tài chính, vui lòng kiểm tra lịch sử giao dịch trước khi thực hiện giao dịch khác. Nếu chưa thực hiện giao dịch, vui lòng bỏ qua thông báo này và chọn lại dịch vụ mong muốn.</string>
