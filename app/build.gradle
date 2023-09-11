@@ -16,10 +16,25 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    signingConfigs {
+        releaseConfig {
+            Properties localProps = new Properties()
+            localProps.load(new FileInputStream(file('../local.properties')))
+            storeFile file(localProps['storeFile'])
+            storePassword localProps['storePassword']
+            keyAlias localProps['keyAlias']
+            keyPassword localProps['keyPassword']
+            v1SigningEnabled true
+            v2SigningEnabled true
+            enableV3Signing = true
+        }
+    }
     buildTypes {
         release {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            debuggable false
+            signingConfig signingConfigs.releaseConfig
         }
         debug {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
