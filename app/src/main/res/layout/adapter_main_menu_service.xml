@@ -2,24 +2,55 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp10"
-    android:paddingTop="@dimen/dp10"
-    android:orientation="vertical">
-
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgFunctionLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/baseline_notifications_24" />
+    android:orientation="vertical"
+    android:background="@drawable/bg_cancel_button"
+    android:layout_marginTop="@dimen/dp10"
+    android:padding="@dimen/dp10">
 
     <com.anlmk.base.ui.views.TextView
-        android:id="@+id/txtFuctionName"
+        android:id="@+id/txt_date_of_meal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="serviceName"
         android:gravity="center"
-        android:layout_gravity="center"/>
+        android:textColor="@color/color_00a1e4"
+        android:text="serviceName"
+        android:textSize="@dimen/sp16" />
+
+    <!-- Include the merged layout -->
+    <include
+        android:id="@+id/llBreakfast"
+        layout="@layout/information_meal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp16"/>
+
+    <View
+        android:id="@+id/lineAfternoon"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp6"
+        android:background="@drawable/view_line_botom" />
+
+    <include
+        android:id="@+id/llLunch"
+        layout="@layout/information_meal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp16"/>
+
+    <View
+        android:id="@+id/lineNight"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp6"
+        android:background="@drawable/view_line_botom"
+        />
+
+    <include
+        android:id="@+id/llDinner"
+        layout="@layout/information_meal_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp16"/>
 
 </LinearLayout>

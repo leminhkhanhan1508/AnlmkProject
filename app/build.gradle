@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 int vsCode = 1
 def vsName = "1.0.0"
 android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.anlmk.base"
+        applicationId "com.anlmk.meal"
         minSdk 23
         targetSdk 33
         versionCode vsCode
@@ -94,10 +95,18 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
 
     coil()
+    roomDatabase()
+
 }
 
 private void coil() {
     dependencies.implementation "io.coil-kt:coil:$coil_version"
     dependencies.implementation "io.coil-kt:coil-gif:$coil_version"
 
+}
+
+private void roomDatabase() {
+    dependencies.implementation "androidx.room:room-runtime:$room_version"
+    dependencies.kapt "androidx.room:room-compiler:$room_version"
+    dependencies.implementation("androidx.room:room-ktx:$room_version")
 }

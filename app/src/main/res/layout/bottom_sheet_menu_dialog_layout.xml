@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="@dimen/_60dp"
+        android:layout_height="@dimen/dp6"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/_10dp"
+        android:background="@drawable/bg_drag_view_white_20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_popup"
+        android:orientation="vertical">
+
+        <com.anlmk.base.ui.views.TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginHorizontal="@dimen/_18dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:lineSpacingExtra="@dimen/text_size_5"
+            android:textColor="@color/color_00a1e4"
+            android:textSize="@dimen/text_size_15" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12dp"
+            android:background="@color/transparent"
+            android:paddingBottom="@dimen/_20dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -8,11 +8,21 @@
     <dimen name="dp48">48dp</dimen>
     <dimen name="dp27">27dp</dimen>
     <dimen name="dp6">6dp</dimen>
-    <dimen name="dp161">16dp</dimen>
     <dimen name="dp16">16dp</dimen>
     <dimen name="_8dp">8dp</dimen>
     <dimen name="_12dp">12dp</dimen>
     <dimen name="text_size_50">50sp</dimen>
     <dimen name="dp10">10dp</dimen>
     <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="dp100">100dp</dimen>
+    <dimen name="text_size_20">20sp</dimen>
+    <dimen name="_60dp">60dp</dimen>
+    <dimen name="_10dp">10dp</dimen>
+    <dimen name="_18dp">18dp</dimen>
+    <dimen name="_20dp">20dp</dimen>
+    <dimen name="text_size_5">5sp</dimen>
+    <dimen name="text_size_15">15sp</dimen>
+    <dimen name="_16dp">16dp</dimen>
+
 </resources>

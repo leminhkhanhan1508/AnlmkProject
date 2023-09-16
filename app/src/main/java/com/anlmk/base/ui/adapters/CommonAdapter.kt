@@ -1,16 +1,20 @@
 package com.anlmk.base.ui.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.anlmk.base.data.`object`.CommonEntity
+import com.anlmk.base.data.`object`.MealsEntity
+import com.anlmk.base.data.`object`.Session
 import com.anlmk.base.databinding.AdapterHeaderTypeBinding
 import com.anlmk.base.databinding.AdapterMainMenuServiceBinding
 import com.anlmk.base.extensions.setSafeOnClickListener
+import com.anlmk.base.utils.Utils
 
 class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
-        const val MENU_SERVICE = 101
+        const val MEALS_HOME = 101
         const val HEADER = 100
     }
 
@@ -21,7 +25,7 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            MENU_SERVICE -> {
+            MEALS_HOME -> {
                 ServiceViewHolder(
                     AdapterMainMenuServiceBinding.inflate(
                         LayoutInflater.from(parent.context), parent, false
@@ -52,7 +56,7 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.onBind(data.data as CommonEntity)
             }
             is ServiceViewHolder -> {
-                holder.onBind(data.data as CommonEntity)
+                holder.onBind(data.data as MealsEntity)
             }
         }
 
@@ -71,23 +75,45 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
 
-    inner class ServiceViewHolder(private val binding: AdapterMainMenuServiceBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ServiceViewHolder(private val binding: AdapterMainMenuServiceBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setSafeOnClickListener {
-                val data = mDataSet[absoluteAdapterPosition].data as? CommonEntity
+                val data = mDataSet[absoluteAdapterPosition].data as? MealsEntity
                 if (data != null) {
                     onClick(data)
                 }
             }
         }
 
-        fun onBind(data: CommonEntity) {
-            binding.imgFunctionLogo.setImageResource(data.getIcon())
-            binding.txtFuctionName.text = data.getTitle()
+        fun onBind(data: MealsEntity) {
+            binding.txtDateOfMeal.text = data.dateOfMeal
+            if (data.mealBreakfast != null) {
+                binding.llBreakfast.txtSession.text = data.mealBreakfast?.sessionName ?: ""
+                binding.llBreakfast.txtTime.text =
+                    Utils.getTimeFormat().format(data.mealBreakfast?.timeOfMeal)
+                binding.llBreakfast.txtFood.text = data.mealBreakfast?.foodOfMeal
+                binding.llBreakfast.txtValueMod.text = data.mealBreakfast?.molOfFood
+            }
+            if (data.mealLunch != null) {
+                binding.llLunch.txtSession.text = data.mealLunch?.sessionName ?: ""
+                binding.llLunch.txtTime.text =
+                    Utils.getTimeFormat().format(data.mealLunch?.timeOfMeal)
+                binding.llLunch.txtFood.text = data.mealLunch?.foodOfMeal
+                binding.llLunch.txtValueMod.text = data.mealLunch?.molOfFood
+            }
+            if (data.mealDinner != null) {
+                binding.llDinner.txtSession.text = data.mealDinner?.sessionName ?: ""
+                binding.llDinner.txtTime.text =
+                    Utils.getTimeFormat().format(data.mealDinner?.timeOfMeal)
+                binding.llDinner.txtFood.text = data.mealDinner?.foodOfMeal
+                binding.llDinner.txtValueMod.text = data.mealDinner?.molOfFood
+            }
         }
     }
 
-    inner class HeaderViewHolder(private val binding: AdapterHeaderTypeBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class HeaderViewHolder(private val binding: AdapterHeaderTypeBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: CommonEntity) {
             binding.title.text = data.getTitle()
         }

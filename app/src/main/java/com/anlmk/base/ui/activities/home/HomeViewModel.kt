@@ -1,70 +1,36 @@
 package com.anlmk.base.ui.activities.home
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.anlmk.base.R
-import com.anlmk.base.data.impl.LoginRepo
+import com.anlmk.base.data.impl.Mealtime
+import com.anlmk.base.data.impl.MealtimeDao
 import com.anlmk.base.data.`object`.CommonEntity
-import com.anlmk.base.data.response.LoginResponse
+import com.anlmk.base.data.`object`.MealsEntity
+import com.anlmk.base.data.`object`.Session
 import com.anlmk.base.di.ResourceProvider
-import com.anlmk.base.ui.adapters.CommonAdapter
 import com.anlmk.base.ui.base.BaseViewModel
+import com.anlmk.base.utils.Utils
 
 class HomeViewModel(
-    private val loginRepo: LoginRepo,
+    private val mealtimeDao: MealtimeDao,
     val resourcesProvider: ResourceProvider) : BaseViewModel()
 {
-    val loginResponse = MutableLiveData<LoginResponse>()
-    fun login(userName:String,password:String) =
-        launch {
-            val login = loginRepo.login(userName,password)
-            loginResponse.postValue(login)
+    val listMealTimeLive = MutableLiveData<List<MealsEntity>>()
+
+    fun getMealTimeList() = launchFromDatabase {
+        val mealtimeList = mealtimeDao.getAllMealtime() ?: arrayListOf()
+        listMealTimeLive.value = getMealTimeList(mealtimeList.sortedByDescending { it?.dateOfMeal })
+    }
+    private fun getMealTimeList(list: List<Mealtime?>): List<MealsEntity> {
+        val groupedMealtime = list.groupBy { it?.dateOfMeal }
+        val mealsEntityList = groupedMealtime.map { (date, group) ->
+            MealsEntity().apply {
+                dateOfMeal = Utils.getDateFormat().format(date)
+                mealBreakfast = group.sortedBy { it?.timeOfMeal }.firstOrNull{ it?.sessionId == Session.getValueSession(Session.Morning) }
+                mealLunch = group.sortedBy { it?.timeOfMeal }.firstOrNull { it?.sessionId == Session.getValueSession(Session.Afternoon) }
+                mealDinner = group.sortedBy { it?.timeOfMeal }.firstOrNull { it?.sessionId == Session.getValueSession(Session.Night) } }
         }
-
-
-    fun getuser() =
-        launch {
-            val response = loginRepo.getUsers()
-            Log.d("KHANHAN",response.message())
-        }
-
-    fun getHomeServiceFunction(): MutableList<CommonEntity> {
-        return  mutableListOf(
-            CommonEntity().apply {
-                this.setTitle("Tiêu đề của chức năng")
-                this.setTypeLayout(CommonAdapter.HEADER)
-            },
-            CommonEntity().apply {
-                this.setTitle(resourcesProvider.getString(R.string.splash_hello))
-                this.setDescript(resourcesProvider.getString(R.string.splash_hello))
-                this.setIcon(R.drawable.baseline_notifications_24)
-            },
-            CommonEntity().apply {
-                this.setTitle(resourcesProvider.getString(R.string.splash_hello))
-                this.setDescript(resourcesProvider.getString(R.string.splash_hello))
-                this.setIcon(R.drawable.baseline_notifications_24)
-            },
-            CommonEntity().apply {
-                this.setTitle(resourcesProvider.getString(R.string.splash_hello))
-                this.setDescript(resourcesProvider.getString(R.string.splash_hello))
-                this.setIcon(R.drawable.baseline_notifications_24)
-            },
-            CommonEntity().apply {
-                this.setTitle(resourcesProvider.getString(R.string.splash_hello))
-                this.setDescript(resourcesProvider.getString(R.string.splash_hello))
-                this.setIcon(R.drawable.baseline_notifications_24)
-            },
-            CommonEntity().apply {
-                this.setTitle(resourcesProvider.getString(R.string.splash_hello))
-                this.setDescript(resourcesProvider.getString(R.string.splash_hello))
-                this.setIcon(R.drawable.baseline_notifications_24)
-            },
-            CommonEntity().apply {
-                this.setTitle(resourcesProvider.getString(R.string.app_name))
-                this.setDescript(resourcesProvider.getString(R.string.splash_hello))
-                this.setIcon(R.drawable.baseline_notifications_24)
-            }
-        )
+        return mealsEntityList
     }
 
     fun getHomeBottomBarFunction(): MutableList<CommonEntity> {

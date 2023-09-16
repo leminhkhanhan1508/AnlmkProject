@@ -58,6 +58,17 @@ abstract class BaseViewModel : ViewModel() {
         }
     }
 
+    fun launchFromDatabase(block: suspend CoroutineScope.() -> Unit): Job {
+        showLoading()
+        return viewModelScope.launch {
+            block.invoke(viewModelScope)
+            withContext(Dispatchers.Main) {
+                hideLoading()
+            }
+            return@launch
+        }
+    }
+
     open fun onError(cause: Throwable) {}
 
 }

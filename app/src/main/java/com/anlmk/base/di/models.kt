@@ -1,5 +1,6 @@
 package com.anlmk.base.di
 
+import com.anlmk.base.ui.activities.addMealTime.MealsTimeViewModel
 import com.anlmk.base.ui.activities.home.HomeViewModel
 import com.anlmk.base.ui.activities.login.LoginViewModel
 import com.anlmk.base.ui.activities.splash.SplashViewModel
@@ -15,6 +16,9 @@ val models = module {
     }
     viewModel {
         HomeViewModel(get(), get())
+    }
+    viewModel {
+        MealsTimeViewModel(get(), get())
     }
 }
 

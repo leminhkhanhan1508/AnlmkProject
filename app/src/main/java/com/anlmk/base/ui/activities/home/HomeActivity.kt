@@ -1,15 +1,18 @@
 package com.anlmk.base.ui.activities.home
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.anlmk.base.R
 import com.anlmk.base.data.`object`.CommonEntity
 import com.anlmk.base.databinding.ActivityHomeBinding
-import com.anlmk.base.databinding.ActivityLoginBinding
+import com.anlmk.base.extensions.setSafeOnClickListener
+import com.anlmk.base.ui.activities.addMealTime.AddMealTimeActivity
 import com.anlmk.base.ui.adapters.CommonAdapter
 import com.anlmk.base.ui.base.BaseActivity
+import com.anlmk.base.utils.RequestCode
+import okhttp3.internal.EMPTY_REQUEST
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeActivity : BaseActivity() {
@@ -17,9 +20,7 @@ class HomeActivity : BaseActivity() {
     override val binding by lazy {
         ActivityHomeBinding.inflate(layoutInflater)
     }
-    private var adapterServiceHome: CommonAdapter? = null
-    private var adapterBottomBarHome: CommonAdapter? = null
-    private val spanNormalFunctionView= 4
+    private var adapterMealOfDateHome: CommonAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,46 +28,46 @@ class HomeActivity : BaseActivity() {
         initListener()
     }
 
-    private fun initListener() {
-        adapterServiceHome?.onClick = {
-            if (it is CommonEntity) {
-                Log.wtf("TEST ACTION HOME", it.getTitle())
-            }
-        }
-        adapterBottomBarHome?.onClick = {
-            if (it is CommonEntity) {
-                Log.wtf("TEST ACTION HOME", it.getTitle())
-            }
-        }
-    }
-
-    private fun initView() {
-        setAdapterServiceHome()
-        setAdapterBottomBarHome()
-    }
-    private fun setAdapterServiceHome() {
-        adapterServiceHome = CommonAdapter()
-        val layoutManagerNormal = GridLayoutManager(this, spanNormalFunctionView)
-        layoutManagerNormal.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when (adapterServiceHome?.getItemViewType(position)) {
-                    CommonAdapter.HEADER -> spanNormalFunctionView
-                    else -> 1
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            RequestCode.REQUEST_ADD_MEAL->{
+                if (resultCode == RESULT_OK){
+                    model.getMealTimeList()
                 }
             }
         }
-        binding.rcvHomeServiceFunction.layoutManager = layoutManagerNormal
-        binding.rcvHomeServiceFunction.adapter = adapterServiceHome
-        adapterServiceHome?.updateData(model.getHomeServiceFunction())
     }
 
-    private fun setAdapterBottomBarHome() {
-        adapterBottomBarHome = CommonAdapter()
-        val layoutManagerNormal =  GridLayoutManager(this, model.getHomeBottomBarFunction().size)
-        binding.rcvHomeBottomBar.layoutManager = layoutManagerNormal
-        binding.rcvHomeBottomBar.adapter = adapterBottomBarHome
-        adapterBottomBarHome?.updateData(model.getHomeBottomBarFunction())
+    private fun initListener() {
+        adapterMealOfDateHome?.onClick = {
+            if (it is CommonEntity) {
+                Log.wtf("TEST ACTION HOME", it.getTitle())
+            }
+        }
+        binding.btnAddInformation.setSafeOnClickListener {
+            startActivityForResult(Intent(this,AddMealTimeActivity::class.java), RequestCode.REQUEST_ADD_MEAL)
+        }
     }
 
+   override fun initView() {
+       model.getMealTimeList()
+        setAdapterServiceHome()
+    }
 
+    override fun onObserveData() {
+        super.onObserveData()
+        model.listMealTimeLive.observe(this, Observer {
+            adapterMealOfDateHome?.updateData(it)
+        })
+    }
+    private fun setAdapterServiceHome() {
+        adapterMealOfDateHome = CommonAdapter()
+        binding.rcvMealOfDateHome.layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        binding.rcvMealOfDateHome.adapter = adapterMealOfDateHome
+    }
 }

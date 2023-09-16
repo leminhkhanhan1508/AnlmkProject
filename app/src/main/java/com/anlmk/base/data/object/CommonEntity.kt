@@ -1,5 +1,7 @@
 package com.anlmk.base.data.`object`
 
+import com.anlmk.base.data.impl.Mealtime
+
 class CommonEntity {
     private var icon: Int = 0
     private var title: String? = null
@@ -9,7 +11,7 @@ class CommonEntity {
     private var typeLayout: Int = 0
     private var counter: Int = 0
     private var dataToolTip: String? = null
-
+    var codeFunction: Int? = null
     fun isHighLight(): Boolean {
         return isHightLight
     }

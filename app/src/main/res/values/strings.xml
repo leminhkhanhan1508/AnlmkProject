@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BaseProject</string>
+    <string name="app_name">Dinh dưỡng</string>
     <string name="error_at_server">Yêu cầu của Quý khách đến hệ thống tạm thời gián đoạn. Vui lòng thử lại sau.</string>
     <string name="error_no_network">Quý khách vui lòng kiểm tra kết nối Internet/3G/Wifi</string>
     <string name="error_network_disconnect">Kết nối đến hệ thống ngân hàng bị gián đoạn. Nếu Quý khách đang trong quá trình thực hiện giao dịch tài chính, vui lòng kiểm tra lịch sử giao dịch trước khi thực hiện giao dịch khác. Nếu chưa thực hiện giao dịch, vui lòng bỏ qua thông báo này và chọn lại dịch vụ mong muốn.</string>
@@ -14,4 +14,24 @@
     <string name="home_page">Home</string>
     <string name="setting_page">Cài đặt</string>
     <string name="other_page">Khác</string>
+    <string name="title_mod">2h sau ăn</string>
+    <string name="add_new_information">Thêm mới</string>
+    <string name="export_file">Xuất File Excel</string>
+    <string name="food_of_meal">Bữa ăn bao gồm</string>
+    <string name="image_of_meal">Ảnh chụp bữa ăn</string>
+    <string name="mmol">mmol/l</string>
+    <string name="two_hours_after_eating">2 giờ sau ăn</string>
+    <string name="hint_input_mmol">Nhập giá trị</string>
+    <string name="eat_time">Ăn lúc</string>
+    <string name="save">Lưu</string>
+    <string name="cancel">Hủy</string>
+    <string name="choose_session">Chọn buổi</string>
+    <string name="morning">Sáng</string>
+    <string name="afternoon">Chiều</string>
+    <string name="night">Tối</string>
+    <string name="error_input_data">Vui lòng nhập đầy đủ thông tin trước khi lưu dữ liệu</string>
+    <string name="add_new_information_success">Lưu thành công</string>
+    <string name="choose_image">Hình ảnh từ:</string>
+    <string name="camera">Camera</string>
+    <string name="album">Thư viện ảnh</string>
 </resources>
