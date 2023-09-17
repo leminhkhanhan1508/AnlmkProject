@@ -8,13 +8,13 @@ import com.anlmk.base.data.room.MyAppDatabase
 @Entity(tableName = "Mealtime")
 data class Mealtime(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    var sessionId: Int?,
-    var sessionName: String?,
-    var dateOfMeal: Long?,
-    var timeOfMeal: Long?,
-    var foodOfMeal:String?,
-    var imageOfFood: ByteArray?,
-    var molOfFood: String?
+    var sessionId: Int? = null,
+    var sessionName: String? = null,
+    var dateOfMeal: Long? = 0,
+    var timeOfMeal: Long? = 0,
+    var foodOfMeal: String? = null,
+    var imageOfFood: String? = null,
+    var molOfFood: String? = null
 )
 
 @Dao
@@ -34,6 +34,9 @@ interface MealtimeDao {
     @Update
     suspend fun updateMealtime(mealtime: Mealtime)
 
+    @Query("DELETE FROM Mealtime WHERE id = :mealtimeId")
+    suspend fun deleteById(mealtimeId: Int)
+
 }
 
 class MealtimeDaoImpl(private val myAppDatabase: MyAppDatabase) : MealtimeDao {
@@ -41,7 +44,7 @@ class MealtimeDaoImpl(private val myAppDatabase: MyAppDatabase) : MealtimeDao {
         try {
             myAppDatabase.mealtimeDao().insertMealtime(mealtime)
         } catch (e: java.lang.Exception) {
-            Log.wtf("KHANHANDEBUG", e.message)
+            Log.wtf("Exception", e.message)
         }
     }
 
@@ -59,5 +62,9 @@ class MealtimeDaoImpl(private val myAppDatabase: MyAppDatabase) : MealtimeDao {
 
     override suspend fun updateMealtime(mealtime: Mealtime) {
         return myAppDatabase.mealtimeDao().updateMealtime(mealtime)
+    }
+
+    override suspend fun deleteById(mealtimeId: Int) {
+        return myAppDatabase.mealtimeDao().deleteById(mealtimeId)
     }
 }

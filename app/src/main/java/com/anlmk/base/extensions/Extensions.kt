@@ -9,25 +9,28 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
 import android.os.ParcelFileDescriptor
 import android.os.SystemClock
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
 import com.anlmk.base.BuildConfig
 import com.anlmk.base.R
+import com.anlmk.base.data.impl.Mealtime
 import com.anlmk.base.ui.views.TextView
 import com.anlmk.base.utils.RequestCode
 import com.anlmk.base.utils.Utils
-import java.io.File
-import java.io.FileDescriptor
-import java.io.InputStream
+import java.io.*
 import java.util.*
 
 
@@ -179,7 +182,7 @@ fun Activity.openCamera():Uri? {
         )
         return outputUri
     } catch (e: Exception) {
-        Log.wtf("KHANHANDEBUG",e.message)
+        Log.wtf("Exception",e.message)
     }
     return null
 }
@@ -214,7 +217,7 @@ fun Activity.openFileSystemManager() {
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
         startActivityForResult(intent, RequestCode.REQUEST_GALLERY)
     } catch (e: java.lang.Exception) {
-        Log.wtf("KHANHANDEBUG",e.message)
+        Log.wtf("Exception",e.message)
     }
 }
 
@@ -229,4 +232,145 @@ fun Context.getBitmapFromUri(uri: Uri): Bitmap? {
         null
     }
 }
+
+fun Context.saveBitmapToInternalStorage(bitmap: Bitmap, filename: String): String {
+    val fileOutputStream: FileOutputStream
+    try {
+        fileOutputStream = this.openFileOutput(filename, Context.MODE_PRIVATE)
+        bitmap.getResizedBitmap()?.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)
+        fileOutputStream.close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return filename
+}
+
+fun Context.loadBitmapFromInternalStorage(filename: String): Bitmap? {
+    return try {
+        val fileInputStream = this.openFileInput(filename)
+        BitmapFactory.decodeStream(fileInputStream)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+fun Context.deleteFileFromInternalStorage(filename: String): Boolean {
+    val file = getFileStreamPath(filename)
+    return if (file.exists()) {
+        file.delete()
+    } else {
+        false
+    }
+}
+
+fun Bitmap.getResizedBitmap(): Bitmap? {
+    val width = this.width
+    val height = this.height
+    val wd = 500
+
+    return if (width < wd) {
+        this
+    } else {
+        val scaleWidth = wd.toFloat() / width.toFloat()
+        val scaleHeight = scaleWidth * height.toFloat() / width.toFloat()
+        val matrix = Matrix()
+        matrix.postScale(scaleWidth, scaleHeight)
+        Bitmap.createBitmap(this, 0, 0, width, height, matrix, false)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.Q)
+fun Context.exportMealtimeListToCSVUseMediaStore(mealtimeList: List<Mealtime?>):Boolean {
+    val fileName = this.getString(R.string.app_name)
+
+    val contentValues = ContentValues().apply {
+        put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+        put(MediaStore.Downloads.MIME_TYPE, "text/csv")
+        put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+    }
+
+    val contentUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+    val resolver = this.contentResolver
+    val uri = resolver.insert(contentUri, contentValues)
+
+    uri?.let { outputFileUri ->
+        try {
+            val outputStream: OutputStream? = resolver.openOutputStream(outputFileUri)
+            outputStream?.let {
+                val outputStreamWriter = OutputStreamWriter(it)
+                val header = "index,Buổi,Thứ,Ngày,Giờ,Thức ăn gồm,Sau 2 giờ ăn\n"
+                outputStreamWriter.write(header)
+                for ((index, mealtime) in mealtimeList.withIndex()) {
+                    val dateOfMeal = Utils.getDateFormat().format(mealtime?.dateOfMeal)
+                    val timeOfMeal = Utils.getTimeFormat().format(mealtime?.timeOfMeal)
+                    val mmol = this.getString(R.string.value_mmol,mealtime?.molOfFood)
+                    val food = "\"${mealtime?.foodOfMeal}\""
+                    val line = "${index+1},${mealtime?.sessionName},${dateOfMeal},${timeOfMeal},${food},${mmol}\n"
+                    outputStreamWriter.write(line)
+                }
+
+                outputStreamWriter.close()
+                return true
+                // Show a toast or a message indicating success
+                // Toast.makeText(context, "Mealtime data exported", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+
+            // Handle the error, show a toast or a message indicating failure
+            // Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show()
+        }
+    }
+    return false
+}
+fun Context.exportMealtimeListToCSV(mealtimeList: List<Mealtime?>):Boolean {
+    val fileName = this.getString(R.string.app_name)
+    val folder = File(Environment.getExternalStorageDirectory(), "MyAppFolder")
+
+    if (!folder.exists()) {
+        folder.mkdirs()
+    }
+
+    val file = File(folder, fileName)
+
+    try {
+        val fileWriter = FileWriter(file)
+
+        // Write the CSV header
+        val header = "index,Buổi,Thứ,Ngày,Giờ,Thức ăn gồm,Sau 2 giờ ăn\n"
+
+        fileWriter.append(header)
+        fileWriter.append("\n")
+
+        for ((index, mealtime) in mealtimeList.withIndex()) {
+            val dateOfMeal = Utils.getDateFormat().format(mealtime?.dateOfMeal)
+            val timeOfMeal = Utils.getTimeFormat().format(mealtime?.timeOfMeal)
+            val mmol = this.getString(R.string.value_mmol,mealtime?.molOfFood)
+            val food = "\"${mealtime?.foodOfMeal}\""
+            val line = "${index+1},${mealtime?.sessionName},${dateOfMeal},${timeOfMeal},${food},${mmol}"
+            fileWriter.append(line)
+            fileWriter.append("\n")
+        }
+
+        fileWriter.flush()
+        fileWriter.close()
+        return true
+        // Show a toast or a message indicating success
+        // Toast.makeText(context, "Mealtime data exported to $file", Toast.LENGTH_SHORT).show()
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+
+        // Handle the error, show a toast or a message indicating failure
+        // Toast.makeText(context, "Export failed", Toast.LENGTH_SHORT).show()
+    }
+    return false
+}
+
+
+
+
+
+
 

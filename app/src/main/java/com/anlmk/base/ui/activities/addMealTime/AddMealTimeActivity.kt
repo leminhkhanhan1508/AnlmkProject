@@ -4,18 +4,24 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import com.anlmk.base.R
+import com.anlmk.base.data.impl.Mealtime
 import com.anlmk.base.data.`object`.ChooseImage
 import com.anlmk.base.data.`object`.CommonEntity
+import com.anlmk.base.data.`object`.Session
 import com.anlmk.base.databinding.ActivityAddMealTimeBinding
 import com.anlmk.base.extensions.*
 import com.anlmk.base.ui.base.BaseActivity
 import com.anlmk.base.ui.dialogs.BottomSheetMenuDialog
 import com.anlmk.base.utils.RequestCode
+import com.anlmk.base.utils.Tags
 import com.anlmk.base.utils.Utils
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.text.SimpleDateFormat
 import java.util.*
+import java.util.logging.Handler
 
 class AddMealTimeActivity : BaseActivity() {
     override val model: MealsTimeViewModel by viewModel()
@@ -35,6 +41,8 @@ class AddMealTimeActivity : BaseActivity() {
             field = value
             handleSetUIImageOfMeal(value)
         }
+    private var isUpdate = false
+    private var mealTimeData: Mealtime? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -56,7 +64,13 @@ class AddMealTimeActivity : BaseActivity() {
         sessionDialog?.setTitleDialog(getString(R.string.choose_session))
         chooseImageDialog = BottomSheetMenuDialog(this)
         chooseImageDialog?.setTitleDialog(getString(R.string.choose_image))
-        initData()
+        if (intent.hasExtra(Tags.EXTRA_MEAL_TIME)) {
+            mealTimeData = intent.getStringExtra(Tags.EXTRA_MEAL_TIME)?.fromJson<Mealtime>()
+            setDataMeal(mealTimeData)
+        } else {
+            initData()
+        }
+
     }
 
     override fun onListener() {
@@ -127,22 +141,31 @@ class AddMealTimeActivity : BaseActivity() {
             })
         }
     }
-
     private fun handleSaveInformation() {
         if (model.validateBeforeSave(
                 binding.edtFoodOfMeal.text.toString(),
                 binding.edtmmolValue.text.toString()
             )
         ) {
-            model.insertMealInformation(
-                model.formatInformationBeforeSave(
+            if (isUpdate) {
+                model.updateMealInformation(
+                    mealTimeData ?: Mealtime(), binding.txtDateOfMeal.text.toString(),
+                    sessionChoose,
+                    binding.txtTimeOfMeal.text.toString(),
+                    binding.edtFoodOfMeal.text.toString(),
+                    binding.edtmmolValue.text.toString(),
+                    imageOfMeal
+                )
+            } else {
+                model.insertMealInformation(
                     binding.txtDateOfMeal.text.toString(),
                     sessionChoose,
                     binding.txtTimeOfMeal.text.toString(),
                     binding.edtFoodOfMeal.text.toString(),
                     binding.edtmmolValue.text.toString(),
+                    imageOfMeal
                 )
-            )
+            }
         } else {
             confirm.newBuild().setNotice(getString(R.string.error_input_data))
         }
@@ -158,7 +181,25 @@ class AddMealTimeActivity : BaseActivity() {
         binding.txtTimeOfMeal.text = currencyTimeStr
         binding.edtmmolValue.text?.clear()
         binding.edtFoodOfMeal.text?.clear()
+        binding.toolbar.txtTitle.text = getString(R.string.add_new_information)
         imageOfMeal = null
+        isUpdate = false
+    }
+    private fun setDataMeal(data: Mealtime?) {
+        val todayStr = Utils.getDateFormat().format(data?.dateOfMeal)
+        val currencyTimeStr = Utils.getTimeFormat().format(data?.timeOfMeal)
+        isUpdate = data?.id != -1
+        if (isUpdate) {
+            binding.toolbar.txtTitle.text = getString(R.string.update_information)
+        } else {
+            binding.toolbar.txtTitle.text = getString(R.string.add_new_information)
+        }
+        sessionChoose = model.getSessionMenu().find { it.codeFunction == data?.sessionId }
+        binding.txtDateOfMeal.text = todayStr
+        binding.txtTimeOfMeal.text = currencyTimeStr
+        binding.edtmmolValue.setText(data?.molOfFood)
+        binding.edtFoodOfMeal.setText(data?.foodOfMeal)
+        imageOfMeal = loadBitmapFromInternalStorage(data?.imageOfFood ?: "")
     }
 
     private fun handleSetUIImageOfMeal(value: Bitmap?) {

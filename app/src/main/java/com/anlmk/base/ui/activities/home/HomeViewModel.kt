@@ -1,5 +1,7 @@
 package com.anlmk.base.ui.activities.home
 
+import android.os.Build
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.anlmk.base.R
 import com.anlmk.base.data.impl.Mealtime
@@ -8,6 +10,8 @@ import com.anlmk.base.data.`object`.CommonEntity
 import com.anlmk.base.data.`object`.MealsEntity
 import com.anlmk.base.data.`object`.Session
 import com.anlmk.base.di.ResourceProvider
+import com.anlmk.base.extensions.exportMealtimeListToCSV
+import com.anlmk.base.extensions.exportMealtimeListToCSVUseMediaStore
 import com.anlmk.base.ui.base.BaseViewModel
 import com.anlmk.base.utils.Utils
 
@@ -16,10 +20,10 @@ class HomeViewModel(
     val resourcesProvider: ResourceProvider) : BaseViewModel()
 {
     val listMealTimeLive = MutableLiveData<List<MealsEntity>>()
-
+    var listMealTime: List<Mealtime?> = arrayListOf()
     fun getMealTimeList() = launchFromDatabase {
-        val mealtimeList = mealtimeDao.getAllMealtime() ?: arrayListOf()
-        listMealTimeLive.value = getMealTimeList(mealtimeList.sortedByDescending { it?.dateOfMeal })
+        listMealTime = mealtimeDao.getAllMealtime() ?: arrayListOf()
+        listMealTimeLive.value = getMealTimeList(listMealTime.sortedByDescending { it?.dateOfMeal })
     }
     private fun getMealTimeList(list: List<Mealtime?>): List<MealsEntity> {
         val groupedMealtime = list.groupBy { it?.dateOfMeal }
@@ -51,5 +55,21 @@ class HomeViewModel(
                 this.setIcon(R.drawable.baseline_scatter_plot_24)
             }
         )
+    }
+
+    fun handleExportData(homeActivity: HomeActivity) {
+        val listMealTime = listMealTime.sortedBy{ it?.timeOfMeal }.sortedByDescending { it?.dateOfMeal }
+        val isSuccess = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            homeActivity.exportMealtimeListToCSVUseMediaStore(listMealTime)
+        } else {
+            homeActivity.exportMealtimeListToCSV(listMealTime)
+        }
+        if (isSuccess) {
+            Toast.makeText(
+                homeActivity,
+                resourcesProvider.getString(R.string.export_file_success),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }

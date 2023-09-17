@@ -22,7 +22,6 @@ class LoginViewModel(
     fun getuser() =
         launch {
             val response = loginRepo.getUsers()
-            Log.d("KHANHAN",response.message())
         }
 
 }

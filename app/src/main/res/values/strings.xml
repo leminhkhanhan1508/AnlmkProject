@@ -31,7 +31,11 @@
     <string name="night">Tối</string>
     <string name="error_input_data">Vui lòng nhập đầy đủ thông tin trước khi lưu dữ liệu</string>
     <string name="add_new_information_success">Lưu thành công</string>
-    <string name="choose_image">Hình ảnh từ:</string>
+    <string name="choose_image">Hình ảnh từ</string>
     <string name="camera">Camera</string>
     <string name="album">Thư viện ảnh</string>
+    <string name="value_mmol">%s mmol/l</string>
+    <string name="update_information">Cập nhật thông tin</string>
+    <string name="export_file_success">Lưu thành công</string>
+    <string name="delete_item_success">Xóa dữ liệu thành công</string>
 </resources>

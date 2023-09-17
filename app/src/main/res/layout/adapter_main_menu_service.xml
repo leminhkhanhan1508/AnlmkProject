@@ -9,10 +9,11 @@
 
     <com.anlmk.base.ui.views.TextView
         android:id="@+id/txt_date_of_meal"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="start"
         android:textColor="@color/color_00a1e4"
+        android:drawableEnd="@drawable/baseline_navigate_next_24"
         android:text="serviceName"
         android:textSize="@dimen/sp16" />
 

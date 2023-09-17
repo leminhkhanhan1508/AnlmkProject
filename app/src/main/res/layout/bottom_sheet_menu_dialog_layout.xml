@@ -31,7 +31,7 @@
             android:layout_marginTop="@dimen/_20dp"
             android:lineSpacingExtra="@dimen/text_size_5"
             android:textColor="@color/color_00a1e4"
-            android:textSize="@dimen/text_size_15" />
+            android:textSize="@dimen/text_size_20" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvMenu"

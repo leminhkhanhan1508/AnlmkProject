@@ -13,7 +13,10 @@ import com.anlmk.base.data.`object`.ChooseImage
 import com.anlmk.base.data.`object`.CommonEntity
 import com.anlmk.base.data.`object`.Session
 import com.anlmk.base.data.response.LoginResponse
+import com.anlmk.base.di.Common
 import com.anlmk.base.di.ResourceProvider
+import com.anlmk.base.extensions.deleteFileFromInternalStorage
+import com.anlmk.base.extensions.saveBitmapToInternalStorage
 import com.anlmk.base.ui.base.BaseViewModel
 import com.anlmk.base.utils.Utils
 import java.util.*
@@ -22,16 +25,84 @@ class MealsTimeViewModel(
     private val mealtimeDao: MealtimeDao,
     private val resourcesProvider: ResourceProvider) : BaseViewModel()
 {
-    val listMealTimeLive = MutableLiveData<List<Mealtime?>>()
+    val listMealTimeByDateLive = MutableLiveData<List<Mealtime?>>()
     val insertMealtime = MutableLiveData<Mealtime>()
-    fun insertMealInformation(mealtime: Mealtime) = launchFromDatabase {
+    val deleteMealtime = MutableLiveData<Mealtime>()
+    fun deleteMealTimeItem(mealTime: Mealtime) = launchFromDatabase {
+        mealtimeDao.deleteById(mealTime.id)
+        deleteMealtime.value = mealTime
+    }
+    fun insertMealInformation(
+        dateOfMeal: String,
+        sessionChoose: CommonEntity?,
+        timeOfMeal: String,
+        foodOfMeal: String,
+        mmolOfMeal: String,
+        imageFood: Bitmap? = null
+    ) = launchFromDatabase {
+        val imagePath = imageFood?.let {
+            Common.currentActivity.saveBitmapToInternalStorage(
+                it,
+                System.nanoTime().toString()
+            )
+        }
+        val mealtime = formatInformationBeforeSave(
+            dateOfMeal,
+            sessionChoose,
+            timeOfMeal,
+            foodOfMeal,
+            mmolOfMeal,
+            imagePath
+        )
         mealtimeDao.insertMealtime(mealtime)
         insertMealtime.value = mealtime
     }
 
-    fun getListMealInformation() = launchFromDatabase {
-        listMealTimeLive.value = mealtimeDao.getAllMealtime()
+    fun updateMealInformation(
+        mealtime: Mealtime,
+        dateOfMeal: String,
+        sessionChoose: CommonEntity?,
+        timeOfMeal: String,
+        foodOfMeal: String,
+        mmolOfMeal: String,
+        imageFood: Bitmap? = null
+    ) = launchFromDatabase {
+        val date = Utils.getDateFormat().parse(dateOfMeal)?.time
+        val time = Utils.getTimeFormat().parse(timeOfMeal)?.time
+        if (mealtime.dateOfMeal != date) {
+            mealtime.dateOfMeal = date
+        }
+        if (mealtime.timeOfMeal != time) {
+            mealtime.timeOfMeal = time
+        }
+        if (mealtime.sessionId != sessionChoose?.codeFunction) {
+            mealtime.sessionId = sessionChoose?.codeFunction
+            mealtime.sessionName = sessionChoose?.getTitle()
+        }
+        if (mealtime.foodOfMeal != foodOfMeal) {
+            mealtime.foodOfMeal = foodOfMeal
+        }
+        if (mealtime.molOfFood != mmolOfMeal) {
+            mealtime.molOfFood = mmolOfMeal
+        }
+        if (imageFood != null) {
+            Common.currentActivity.deleteFileFromInternalStorage(mealtime.imageOfFood ?: "")
+            mealtime.imageOfFood = imageFood.let {
+                Common.currentActivity.saveBitmapToInternalStorage(
+                    it,
+                    System.nanoTime().toString()
+                )
+            }
+        }
+        mealtimeDao.updateMealtime(mealtime)
+        insertMealtime.value = mealtime
     }
+
+    fun getMealTimeByDateList(dateOfMeal: String) = launchFromDatabase {
+        val mealtimeList = mealtimeDao.getMealtimeByDate(Utils.getDateFormat().parse(dateOfMeal)?.time) ?: arrayListOf()
+        listMealTimeByDateLive.value = mealtimeList.sortedBy { it?.timeOfMeal }
+    }
+
     fun getSessionMenu(): MutableList<CommonEntity> {
         return  mutableListOf(
             CommonEntity().apply {
@@ -62,7 +133,7 @@ class MealsTimeViewModel(
         timeOfMeal: String,
         foodOfMeal: String,
         mmolOfMeal: String,
-        imageFood: Bitmap?=null
+        imageFood: String?=null
     ): Mealtime {
         val date = Utils.getDateFormat().parse(dateOfMeal)?.time
         val time = Utils.getTimeFormat().parse(timeOfMeal)?.time
@@ -73,7 +144,7 @@ class MealsTimeViewModel(
             timeOfMeal = time,
             foodOfMeal = foodOfMeal,
             molOfFood = mmolOfMeal,
-            imageOfFood = Utils.fromBitmap(imageFood)
+            imageOfFood = imageFood
         )
     }
 
