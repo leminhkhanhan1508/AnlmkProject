@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_home_1"
+    android:background="@drawable/bg_nutrition_app"
     android:fitsSystemWindows="true">
 
     <include
@@ -62,7 +62,7 @@
             android:layout_marginEnd="@dimen/dp10"
             android:text="@string/eat_time"
             android:textSize="@dimen/text_size_16"
-            android:textColor="@color/white"
+            android:textColor="@color/text_color_main"
             />
 
         <com.anlmk.base.ui.views.TextView
@@ -88,7 +88,7 @@
         android:layout_marginTop="@dimen/dp20"
         android:textSize="@dimen/text_size_16"
         android:text="@string/food_of_meal"
-        android:textColor="@color/white"/>
+        android:textColor="@color/text_color_main"/>
 
     <com.anlmk.base.ui.views.EditText
         android:id="@+id/edtFoodOfMeal"
@@ -141,7 +141,7 @@
             android:layout_weight="1"
             android:text="@string/two_hours_after_eating"
             android:layout_gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/text_color_main"
             android:textSize="@dimen/text_size_16"
             />
 

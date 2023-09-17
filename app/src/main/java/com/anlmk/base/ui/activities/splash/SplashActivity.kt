@@ -11,7 +11,7 @@ import com.anlmk.base.ui.base.BaseActivity
 import org.koin.android.viewmodel.ext.android.viewModel
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity:BaseActivity() {
+class SplashActivity : BaseActivity() {
     override val model: SplashViewModel by viewModel()
     override val binding by lazy {
         ActivitySplashBinding.inflate(layoutInflater)
@@ -19,10 +19,7 @@ class SplashActivity:BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Handler().postDelayed(Runnable {
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
-        }, 400)
-
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
     }
 }
