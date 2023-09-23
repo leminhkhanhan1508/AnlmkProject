@@ -130,27 +130,26 @@ class CommonAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(),SwipeToDel
                 binding.llBreakfast.txtSession.context.getString(R.string.morning)
             binding.llDinner.txtSession.text =
                 binding.llDinner.txtSession.context.getString(R.string.night)
-            if (data.mealBreakfast != null) {
-                binding.llBreakfast.txtTime.text = Utils.getTimeFormat().format(data.mealBreakfast?.timeOfMeal)
-                binding.llBreakfast.txtFood.text = data.mealBreakfast?.foodOfMeal
-                binding.llBreakfast.txtValueMod.text = Common.currentActivity.getString(
-                    R.string.value_mmol,
-                    data.mealBreakfast?.molOfFood
-                )
-            }
-            if (data.mealLunch != null) {
-                binding.llLunch.txtTime.text = Utils.getTimeFormat().format(data.mealLunch?.timeOfMeal)
-                binding.llLunch.txtFood.text = data.mealLunch?.foodOfMeal
-                binding.llLunch.txtValueMod.text = Common.currentActivity.getString(R.string.value_mmol, data.mealLunch?.molOfFood)
-            }
-            if (data.mealDinner != null) {
-                binding.llDinner.txtTime.text = Utils.getTimeFormat().format(data.mealDinner?.timeOfMeal)
-                binding.llDinner.txtFood.text = data.mealDinner?.foodOfMeal
-                binding.llDinner.txtValueMod.text = Common.currentActivity.getString(
-                    R.string.value_mmol,
-                    data.mealDinner?.molOfFood
-                )
-            }
+            val textDefault = Common.currentActivity.getString(R.string.text_default)
+            binding.llBreakfast.txtTime.text = Utils.formatTime(data.mealBreakfast?.timeOfMeal) ?: textDefault
+            binding.llBreakfast.txtFood.text = data.mealBreakfast?.foodOfMeal ?: textDefault
+            binding.llBreakfast.txtValueMod.text = Common.currentActivity.getString(
+                R.string.value_mmol,
+                data.mealBreakfast?.molOfFood ?: textDefault
+            )
+            binding.llLunch.txtTime.text = Utils.formatTime(data.mealLunch?.timeOfMeal) ?: textDefault
+            binding.llLunch.txtFood.text = data.mealLunch?.foodOfMeal ?: textDefault
+            binding.llLunch.txtValueMod.text = Common.currentActivity.getString(
+                R.string.value_mmol,
+                data.mealLunch?.molOfFood ?: textDefault
+            )
+            binding.llDinner.txtTime.text = Utils.formatTime(data.mealDinner?.timeOfMeal) ?: textDefault
+            binding.llDinner.txtFood.text = data.mealDinner?.foodOfMeal ?: textDefault
+            binding.llDinner.txtValueMod.text = Common.currentActivity.getString(
+                R.string.value_mmol,
+                data.mealDinner?.molOfFood ?: textDefault
+            )
+
         }
     }
 

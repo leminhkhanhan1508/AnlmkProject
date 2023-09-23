@@ -38,4 +38,5 @@
     <string name="update_information">Cập nhật thông tin</string>
     <string name="export_file_success">Lưu thành công</string>
     <string name="delete_item_success">Xóa dữ liệu thành công</string>
+    <string name="text_default">---</string>
 </resources>

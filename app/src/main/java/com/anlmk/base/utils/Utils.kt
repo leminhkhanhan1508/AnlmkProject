@@ -7,6 +7,7 @@ import android.os.Build
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.coroutineContext
 
 object Utils {
     fun fromBitmap(bitmap: Bitmap?): ByteArray? {
@@ -31,6 +32,18 @@ object Utils {
 
     fun getDateFormat(): SimpleDateFormat {
         return SimpleDateFormat("EEEE, dd/MM/yyyy", Locale.getDefault())
+    }
+
+    fun formatTime(time: Long? = -1L): String? {
+        if (time == -1L) {
+            return null
+        }
+        try {
+            return getTimeFormat().format(time)
+        } catch (e: java.lang.Exception) {
+        }
+        return null
+
     }
 
     fun getListMediaPermission(): Array<String> {
